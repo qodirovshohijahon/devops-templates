@@ -1,13 +1,27 @@
+#===============================================================================
+#
+#   Date: 12:31 15-06-2022
+#   Author: Shokhijakhon(Mustofa) Kodirov
+#   Description: Script to provision EKS using cloudformation template
+#                including a VPC, 
+#                the EKS control plane (master nodes) and the EKS worker nodes.
+#
+#===============================================================================
+
 #!/bin/bash
 
 set -e
 
-# EDIT THIS:
+# PARAMETERS:
 #------------------------------------------------------------------------------#
-NUM_WORKER_NODES=1
-WORKER_NODES_INSTANCE_TYPE=t2.micro
-STACK_NAME=test-cluster
-KEY_PAIR_NAME=qs-us-east-1
+# NUM_WORKER_NODES=1
+# WORKER_NODES_INSTANCE_TYPE=t2.micro
+# STACK_NAME=test-cluster
+# KEY_PAIR_NAME=qs-us-east-1
+NUM_WORKER_NODES=$WORKER_COUNTS
+WORKER_NODES_INSTANCE_TYPE=$WORKER_TYPES
+STACK_NAME=$STACK_NAME
+KEY_PAIR_NAME=$KEY_PAIR_NAME
 #------------------------------------------------------------------------------#
 
 # Output colours
@@ -54,3 +68,8 @@ EOF
 
 echo -e "\n$COL> Almost done! Cluster will be ready when all nodes have a 'Ready' status."
 echo -e "> Check it with: kubectl get nodes --watch$NOC"
+
+echo "Token-----"
+token="$(kubectl get secret "$secret" -o "jsonpath={.data.token}" | openssl enc -d -base64 -A)"
+echo "here is kubeconfig"
+echo $(~/.kube/config)
